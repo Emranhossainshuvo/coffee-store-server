@@ -15,7 +15,7 @@ app.use(express.json());
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.0fn8ke9.mongodb.net/?retryWrites=true&w=majority`;
 
-console.log(uri);
+// console.log(uri);
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
@@ -30,8 +30,10 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
-        console.log('db connected');
+        // console.log('db connected');
         const coffeeCollection = client.db('coffeeDB').collection('coffee');
+
+        const userCollection = client.db('coffeeDB').collection('user')
 
         app.get('/coffee', async (req, res) => {
             const cursor = coffeeCollection.find()
@@ -48,7 +50,7 @@ async function run() {
 
         app.post('/coffee', async (req, res) => {
             const newCoffee = req.body;
-            console.log(newCoffee);
+            // console.log(newCoffee);
             const result = await coffeeCollection.insertOne(newCoffee);
             res.send(result)
         })
@@ -81,6 +83,13 @@ async function run() {
 
         })
 
+        app.post('/user', async(req, res) => {
+            const user = req.body; 
+            console.log(user);
+            const result = await userCollection.insertOne(user)
+            res.send(result)
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -100,5 +109,5 @@ app.get('/', (req, res) => {
 
 
 app.listen(port, () => {
-    console.log(`my coffee shop is running from port: ${port}`);
+    // console.log(`my coffee shop is running from port: ${port}`);
 })
